@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tempo Strength Club</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: left-aligned athletic editorial; hero pairs headline with a working interval timer; sections stack as a training log. */
+:root{
+  --bg:#F1F3F7; --surface:#FFFFFF; --ink:#0E1626; --muted:#566076; --line:#D5DAE3;
+  --accent:#2338E8; --accent-ink:#FFFFFF; --soft:#E4E8F8; --good:#17803D; --warn:#B45309;
+  --display:'Big Shoulders Display','Arial Narrow',Impact,sans-serif;
+  --body:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'DM Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B1020; --surface:#131B33; --ink:#EEF1F8; --muted:#9BA6BE; --line:#26314F;
+  --accent:#8896FF; --accent-ink:#0B1020; --soft:#1B2646; --good:#4ADE80; --warn:#FBBF24; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1020; --surface:#131B33; --ink:#EEF1F8; --muted:#9BA6BE; --line:#26314F;
+  --accent:#8896FF; --accent-ink:#0B1020; --soft:#1B2646; --good:#4ADE80; --warn:#FBBF24; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+.wrap{max-width:1120px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-transform:uppercase;line-height:.95;margin:0;text-wrap:balance;letter-spacing:.005em}
+h1{font-size:clamp(3.4rem,9vw,6.6rem);font-weight:900}
+h2{font-size:clamp(2.2rem,5vw,3.4rem);font-weight:800}
+h3{font-size:1.6rem;font-weight:800}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.btn{font:600 1rem var(--body);background:var(--accent);color:var(--accent-ink);border:2px solid var(--accent);padding:.75rem 1.3rem;border-radius:6px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--bg)}
+
+/* header */
+header.top{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding-block:1.1rem;border-bottom:2px solid var(--ink)}
+.logo{font-family:var(--display);font-weight:900;font-size:1.7rem;text-transform:uppercase;letter-spacing:.02em;text-decoration:none}
+.logo span{color:var(--accent)}
+nav{display:flex;gap:1.3rem;flex-wrap:wrap;font-weight:600;font-size:.95rem}
+nav a{text-decoration:none;color:var(--muted)}
+nav a:hover{color:var(--ink)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:2.5rem;align-items:center;padding-block:3.2rem 3.6rem}
+.hero > *{min-width:0}
+.hero .lede{max-width:34rem;margin-top:1.4rem;color:var(--muted);font-size:1.12rem}
+.hero .cta{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.8rem}
+.hero em{font-style:normal;color:var(--accent)}
+.facts{display:flex;gap:2rem;flex-wrap:wrap;margin-top:2.2rem;padding-top:1.2rem;border-top:1px solid var(--line)}
+.facts div{font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+.facts b{display:block;font-family:var(--display);font-size:2rem;color:var(--ink);font-weight:800}
+
+/* timer */
+.timer{background:var(--surface);border:2px solid var(--ink);border-radius:10px;padding:1.4rem;box-shadow:8px 8px 0 var(--accent)}
+.timer .head{display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;margin-bottom:.8rem}
+.ring{position:relative;width:min(240px,100%);aspect-ratio:1;margin:0 auto}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .track{stroke:var(--line);fill:none;stroke-width:12}
+.ring .bar{stroke:var(--accent);fill:none;stroke-width:12;stroke-linecap:butt;transition:stroke-dashoffset .95s linear,stroke .2s}
+.ring.rest .bar{stroke:var(--good)}
+.ring .center{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring .sec{font-family:var(--display);font-weight:900;font-size:5.4rem;line-height:1;font-variant-numeric:tabular-nums}
+.ring .phase{font-family:var(--mono);letter-spacing:.2em;text-transform:uppercase;font-size:.8rem;color:var(--muted)}
+.timer .row{display:flex;gap:.6rem;justify-content:center;margin-top:1.1rem;flex-wrap:wrap}
+.timer .btn{padding:.55rem 1.1rem}
+.dots{display:flex;gap:6px;justify-content:center;margin-top:1rem}
+.dots i{width:22px;height:6px;background:var(--line);border-radius:2px}
+.dots i.done{background:var(--accent)}
+.dots i.now{background:var(--ink)}
+
+/* sections */
+section{padding-block:3.6rem;border-top:2px solid var(--ink)}
+.sec-head{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem 3rem;align-items:end;margin-bottom:2.2rem}
+.sec-head > *{min-width:0}
+.sec-head p{color:var(--muted);max-width:34rem}
+
+/* programs */
+.programs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}
+.prog{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:1.3rem;display:flex;flex-direction:column;gap:.8rem;min-width:0}
+.prog:hover{border-color:var(--ink)}
+.prog p{color:var(--muted);font-size:.96rem;flex:1}
+.prog dl{display:grid;grid-template-columns:auto 1fr;gap:.2rem .8rem;margin:0;font-family:var(--mono);font-size:.8rem;border-top:1px solid var(--line);padding-top:.7rem}
+.prog dt{color:var(--muted)} .prog dd{margin:0;text-align:right}
+
+/* tools */
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.tools > *{min-width:0}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:1.4rem}
+.panel h3{margin-bottom:.3rem}
+.panel .sub{color:var(--muted);font-size:.92rem;margin-bottom:1.1rem}
+form.grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+label{display:flex;flex-direction:column;gap:.25rem;font-size:.82rem;font-weight:600;color:var(--muted);min-width:0}
+input,select,textarea{font:500 1rem var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:.6rem .7rem;width:100%;min-width:0}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+.span2{grid-column:1/-1}
+.out{margin-top:1.1rem;display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
+.out div{background:var(--soft);border-radius:6px;padding:.7rem;min-width:0}
+.out small{display:block;font-family:var(--mono);font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.out b{font-family:var(--display);font-size:1.9rem;font-weight:800;font-variant-numeric:tabular-nums}
+.note{font-size:.8rem;color:var(--muted);margin-top:.9rem}
+.tag{display:inline-block;font-family:var(--mono);font-size:.7rem;background:var(--soft);padding:.1rem .45rem;border-radius:4px;margin-left:.3rem;vertical-align:middle;color:var(--muted)}
+
+/* planner */
+.week{display:grid;gap:.5rem;margin-top:1rem}
+.day{display:grid;grid-template-columns:3rem 1fr;gap:.8rem;border-top:1px solid var(--line);padding-top:.6rem}
+.day > *{min-width:0}
+.day .d{font-family:var(--mono);font-size:.8rem;color:var(--muted);padding-top:.15rem}
+.day b{display:block;font-weight:700}
+.day span{font-size:.88rem;color:var(--muted)}
+.day.rest b{color:var(--muted);font-weight:500}
+
+/* pricing */
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;align-items:stretch}
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:1.5rem;display:flex;flex-direction:column;gap:1rem;min-width:0}
+.plan.feat{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--accent)}
+.price{font-family:var(--display);font-size:3.4rem;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.price small{font-family:var(--mono);font-size:.8rem;font-weight:400;color:var(--muted)}
+.plan ul{list-style:none;padding:0;margin:0;display:grid;gap:.45rem;flex:1;font-size:.95rem}
+.plan li::before{content:"+ ";font-family:var(--mono);color:var(--accent);font-weight:500}
+
+/* schedule */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.92rem}
+th,td{padding:.7rem .9rem;text-align:left;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+tr:last-child td{border-bottom:0}
+td:first-child{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* contact */
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem}
+.contact > *{min-width:0}
+.contact address{font-style:normal;margin-top:1.2rem;display:grid;gap:.4rem;color:var(--muted)}
+.contact address b{color:var(--ink)}
+.msg{margin-top:.8rem;padding:.8rem 1rem;border-radius:6px;background:var(--soft);font-size:.92rem}
+footer{border-top:2px solid var(--ink);padding-block:1.6rem 2.4rem;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.85rem}
+
+@media (max-width:860px){
+  .hero,.sec-head,.tools,.contact{grid-template-columns:1fr}
+  .timer{box-shadow:5px 5px 0 var(--accent)}
+}
+@media (max-width:480px){
+  form.grid{grid-template-columns:1fr}
+  .out{grid-template-columns:1fr 1fr}
+  nav{gap:.9rem}
+}
+@media (prefers-reduced-motion:reduce){.ring .bar{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="#top">Tempo<span>.</span></a>
+    <nav aria-label="Main">
+      <a href="#programs">Programs</a><a href="#tools">Calculator</a><a href="#planner">Planner</a><a href="#pricing">Pricing</a><a href="#schedule">Schedule</a><a href="#join">Join</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <div>
+        <p class="eyebrow">Strength &amp; conditioning club</p>
+        <h1 style="margin-top:.9rem">Train like it's <em>on the clock.</em></h1>
+        <p class="lede">Coached small-group sessions, honest programming and a floor that opens at 5:30 AM. Whether you're lifting for the first time or chasing a deadlift PR, every session has a start, a finish and a plan.</p>
+        <div class="cta">
+          <a class="btn" href="#join">Book a free trial</a>
+          <a class="btn ghost" href="#planner">Build my week</a>
+        </div>
+        <div class="facts">
+          <div><b>45 min</b>per session</div>
+          <div><b>8</b>athletes per coach</div>
+          <div><b>17 hrs</b>open daily</div>
+        </div>
+      </div>
+
+      <div class="timer" aria-label="Interval timer">
+        <div class="head"><span class="eyebrow">Try a Tabata round</span><span class="eyebrow">20s on / 10s off</span></div>
+        <div class="ring" id="ring">
+          <svg viewBox="0 0 200 200" aria-hidden="true"><circle class="track" cx="100" cy="100" r="90"/><circle class="bar" id="bar" cx="100" cy="100" r="90" stroke-dasharray="565.49" stroke-dashoffset="0"/></svg>
+          <div class="center" role="timer" aria-live="off">
+            <div class="sec" id="sec">20</div>
+            <div class="phase" id="phase">Ready</div>
+          </div>
+        </div>
+        <div class="dots" id="dots" aria-hidden="true"></div>
+        <p class="eyebrow" id="roundTxt" style="text-align:center;margin-top:.6rem">Round 1 of 8</p>
+        <div class="row">
+          <button class="btn" id="go" type="button">Start</button>
+          <button class="btn ghost" id="reset" type="button">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <section id="programs">
+      <div class="sec-head">
+        <h2>Four ways to train</h2>
+        <p>Every program runs in a fixed 45-minute block with a warm-up, a main block and a finisher. Pick the one that matches where you are now.</p>
+      </div>
+      <div class="programs">
+        <article class="prog"><h3>Foundations</h3><p>Learn the squat, hinge, press, pull and carry with a coach beside you. Built for first-timers and anyone returning after a break.</p>
+          <dl><dt>Level</dt><dd>Beginner</dd><dt>Sessions</dt><dd>3 / week</dd><dt>Burn</dt><dd>~300 kcal</dd></dl></article>
+        <article class="prog"><h3>Barbell Club</h3><p>Progressive overload on squat, bench, deadlift and overhead press. Logged loads, planned deloads, and a PR board.</p>
+          <dl><dt>Level</dt><dd>Intermediate</dd><dt>Sessions</dt><dd>4 / week</dd><dt>Burn</dt><dd>~350 kcal</dd></dl></article>
+        <article class="prog"><h3>Engine HIIT</h3><p>Intervals on rowers, bikes and sleds. Short, loud and hard, with work-to-rest ratios that scale to your fitness.</p>
+          <dl><dt>Level</dt><dd>All levels</dd><dt>Sessions</dt><dd>2-4 / week</dd><dt>Burn</dt><dd>~450 kcal</dd></dl></article>
+        <article class="prog"><h3>Mobility &amp; Core</h3><p>Hips, shoulders and spine. Slow tempo work that keeps your joints healthy and your lifts clean.</p>
+          <dl><dt>Level</dt><dd>All levels</dd><dt>Sessions</dt><dd>2 / week</dd><dt>Burn</dt><dd>~180 kcal</dd></dl></article>
+      </div>
+    </section>
+
+    <section id="tools">
+      <div class="sec-head">
+        <h2>Know your numbers</h2>
+        <p>A starting estimate for BMI, daily calories and protein. The fields are filled with example values; change them to yours.</p>
+      </div>
+      <div class="tools">
+        <div class="panel">
+          <h3>Body &amp; calorie calculator <span class="tag">example values</span></h3>
+          <p class="sub">Uses the Mifflin-St Jeor equation for resting energy.</p>
+          <form class="grid" id="calc" novalidate>
+            <label>Age (years)<input id="age" type="number" min="14" max="90" value="21" inputmode="numeric"></label>
+            <label>Sex<select id="sex"><option value="m">Male</option><option value="f">Female</option></select></label>
+            <label>Height (cm)<input id="ht" type="number" min="120" max="230" value="172" inputmode="numeric"></label>
+            <label>Weight (kg)<input id="wt" type="number" min="30" max="250" value="68" inputmode="decimal"></label>
+            <label>Activity<select id="act">
+              <option value="1.2">Desk-bound, little exercise</option>
+              <option value="1.375" selected>Light, 1-3 days a week</option>
+              <option value="1.55">Moderate, 3-5 days a week</option>
+              <option value="1.725">Hard, 6-7 days a week</option></select></label>
+            <label>Goal<select id="goal"><option value="-400">Lose fat</option><option value="0" selected>Maintain</option><option value="300">Build muscle</option></select></label>
+          </form>
+          <div class="out" aria-live="polite">
+            <div><small>BMI</small><b id="oBmi">-</b></div>
+            <div><small>Daily kcal</small><b id="oKcal">-</b></div>
+            <div><small>Protein (g)</small><b id="oPro">-</b></div>
+          </div>
+          <p class="note" id="bmiNote"></p>
+          <p class="note">General estimate only. BMI does not separate muscle from fat. For medical conditions, talk to a doctor or dietitian.</p>
+        </div>
+
+        <div class="panel" id="planner">
+          <h3>Weekly workout planner</h3>
+          <p class="sub">Choose a goal and how many days you can train.</p>
+          <form class="grid" id="plan" novalidate>
+            <label>Goal<select id="pGoal"><option value="muscle">Build muscle</option><option value="fat">Lose fat</option><option value="gen">General fitness</option></select></label>
+            <label>Days per week<select id="pDays"><option value="3">3 days</option><option value="4" selected>4 days</option><option value="5">5 days</option></select></label>
+          </form>
+          <div class="week" id="week"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing">
+      <div class="sec-head">
+        <h2>Simple pricing</h2>
+        <p>No joining fee and no lock-in contracts. Prices are sample figures in Indian rupees; replace them with your own.</p>
+      </div>
+      <div class="plans">
+        <div class="plan"><span class="eyebrow">Day pass</span><div class="price">₹299 <small>/ visit</small></div>
+          <ul><li>Full floor access</li><li>Locker and shower</li><li>One coach floor check</li></ul><a class="btn ghost" href="#join">Try a day</a></div>
+        <div class="plan feat"><span class="eyebrow">Monthly &middot; most chosen</span><div class="price">₹1,799 <small>/ month</small></div>
+          <ul><li>Unlimited floor access</li><li>All group programs</li><li>Monthly body check-in</li><li>Pause for up to 7 days</li></ul><a class="btn" href="#join">Join monthly</a></div>
+        <div class="plan"><span class="eyebrow">Annual</span><div class="price">₹14,999 <small>/ year</small></div>
+          <ul><li>Everything in Monthly</li><li>2 personal training sessions</li><li>Nutrition consult</li><li>Bring a friend 4 times</li></ul><a class="btn ghost" href="#join">Join annual</a></div>
+      </div>
+    </section>
+
+    <section id="schedule">
+      <div class="sec-head">
+        <h2>This week's classes</h2>
+        <p>Sample timetable. Spots are capped at 8 per coach, so book ahead for the 6 AM and 7 PM slots.</p>
+      </div>
+      <div class="tbl"><table>
+        <thead><tr><th>Time</th><th>Mon / Wed / Fri</th><th>Tue / Thu</th><th>Sat</th></tr></thead>
+        <tbody>
+          <tr><td>06:00</td><td>Barbell Club</td><td>Engine HIIT</td><td>Foundations</td></tr>
+          <tr><td>08:00</td><td>Mobility &amp; Core</td><td>Foundations</td><td>Engine HIIT</td></tr>
+          <tr><td>18:00</td><td>Engine HIIT</td><td>Barbell Club</td><td>Mobility &amp; Core</td></tr>
+          <tr><td>19:30</td><td>Foundations</td><td>Mobility &amp; Core</td><td>Open floor</td></tr>
+        </tbody></table></div>
+    </section>
+
+    <section id="join">
+      <div class="contact">
+        <div>
+          <h2>Book a free trial</h2>
+          <p style="margin-top:1rem;color:var(--muted);max-width:30rem">Tell us your goal and we'll set up a 45-minute trial session with a coach. No payment needed.</p>
+          <address>
+            <span><b>Hours</b> 5:30 AM to 10:30 PM, every day</span>
+            <span><b>Phone</b> +91 00000 00000</span>
+            <span><b>Email</b> hello@tempo-club.example</span>
+            <span><b>Address</b> Add your gym's street address here</span>
+          </address>
+        </div>
+        <div class="panel">
+          <form class="grid" id="join-form" novalidate>
+            <label class="span2">Full name<input id="jName" type="text" autocomplete="name"></label>
+            <label>Phone<input id="jPhone" type="tel" autocomplete="tel"></label>
+            <label>Main goal<select id="jGoal"><option>Build muscle</option><option>Lose fat</option><option>Get stronger</option><option>Improve stamina</option><option>Just get started</option></select></label>
+            <label class="span2">Anything we should know?<textarea id="jNote" rows="3"></textarea></label>
+            <div class="span2"><button class="btn" type="submit">Request my trial</button></div>
+          </form>
+          <p class="msg" id="jMsg" hidden></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>Tempo Strength Club</span><span>Sample site. Replace text, prices and contact details with your own.</span></footer>
+</div>
+
+<script>
+(function(){
+  /* ---------- Interval timer ---------- */
+  var WORK=20, REST=10, ROUNDS=8, C=565.49;
+  var s={round:1,phase:'ready',left:WORK,run:false,t:null};
+  var $=function(id){return document.getElementById(id)};
+  var ring=$('ring'),bar=$('bar'),secEl=$('sec'),phEl=$('phase'),goBtn=$('go'),rt=$('roundTxt'),dots=$('dots');
+  for(var i=0;i<ROUNDS;i++){dots.appendChild(document.createElement('i'))}
+  function draw(){
+    var total=s.phase==='rest'?REST:WORK;
+    secEl.textContent=s.left;
+    phEl.textContent=s.phase==='ready'?'Ready':s.phase==='done'?'Done':s.phase==='work'?'Work':'Rest';
+    ring.classList.toggle('rest',s.phase==='rest');
+    bar.style.strokeDashoffset=(C*(1-(s.phase==='done'?1:s.left/total)))||0;
+    if(s.phase==='done'){bar.style.strokeDashoffset=C}
+    rt.textContent=s.phase==='done'?'8 rounds complete':'Round '+s.round+' of '+ROUNDS;
+    var d=dots.children;
+    for(var k=0;k<ROUNDS;k++){d[k].className=(k+1<s.round||s.phase==='done')?'done':(k+1===s.round&&s.phase!=='ready')?'now':''}
+    goBtn.textContent=s.run?'Pause':(s.phase==='ready'?'Start':s.phase==='done'?'Again':'Resume');
+  }
+  function tick(){
+    s.left--;
+    if(s.left>0){draw();return}
+    if(s.phase==='work'){ s.phase='rest'; s.left=REST }
+    else if(s.phase==='rest'){
+      if(s.round>=ROUNDS){ s.phase='done'; stop(); s.left=0 }
+      else { s.round++; s.phase='work'; s.left=WORK }
+    }
+    draw();
+  }
+  function stop(){clearInterval(s.t);s.t=null;s.run=false}
+  function reset(){stop();s.round=1;s.phase='ready';s.left=WORK;draw()}
+  goBtn.addEventListener('click',function(){
+    if(s.run){stop();draw();return}
+    if(s.phase==='done'){reset()}
+    if(s.phase==='ready'){s.phase='work';s.left=WORK}
+    s.run=true;s.t=setInterval(tick,1000);draw();
+  });
+  $('reset').addEventListener('click',reset);
+  draw();
+
+  /* ---------- Calculator ---------- */
+  function calc(){
+    var age=+$('age').value,ht=+$('ht').value,wt=+$('wt').value,act=+$('act').value,adj=+$('goal').value,male=$('sex').value==='m';
+    if(!(age>0&&ht>0&&wt>0)){$('oBmi').textContent='-';$('oKcal').textContent='-';$('oPro').textContent='-';$('bmiNote').textContent='Enter age, height and weight to see your numbers.';return}
+    var m=ht/100,bmi=wt/(m*m);
+    var bmr=10*wt+6.25*ht-5*age+(male?5:-161);
+    var kcal=Math.round((bmr*act+adj)/10)*10;
+    var pro=Math.round(wt*(adj>0?2.0:1.8));
+    var cat=bmi<18.5?'below the usual healthy range':bmi<25?'in the usual healthy range':bmi<30?'above the usual healthy range':'well above the usual healthy range';
+    $('oBmi').textContent=bmi.toFixed(1);
+    $('oKcal').textContent=kcal.toLocaleString('en-IN');
+    $('oPro').textContent=pro;
+    $('bmiNote').textContent='Your BMI is '+cat+' (18.5 to 24.9 for adults). Resting energy is about '+Math.round(bmr).toLocaleString('en-IN')+' kcal a day.';
+  }
+  ['age','sex','ht','wt','act','goal'].forEach(function(id){$(id).addEventListener('input',calc)});
+  $('calc').addEventListener('submit',function(e){e.preventDefault()});
+  calc();
+
+  /* ---------- Planner ---------- */
+  var S={
+    muscle:[
+      {n:'Push',x:'Bench press 4x6-8, overhead press 3x8, incline dumbbell press 3x10, triceps pushdown 3x12'},
+      {n:'Pull',x:'Deadlift 3x5, pull-ups 4x6-8, barbell row 3x8, face pulls 3x15, biceps curl 3x12'},
+      {n:'Legs',x:'Back squat 4x6, Romanian deadlift 3x8, walking lunge 3x10 each, calf raise 4x15'},
+      {n:'Upper',x:'Incline press 3x8, chest-supported row 3x10, lateral raise 3x15, dips 3x10'},
+      {n:'Lower',x:'Front squat 3x8, hip thrust 3x10, leg curl 3x12, hanging knee raise 3x12'}],
+    fat:[
+      {n:'Full-body circuit',x:'Goblet squat, push-up, dumbbell row, kettlebell swing. 4 rounds of 40s work, 20s rest'},
+      {n:'Intervals',x:'Rower or bike. 10 x 30s hard, 60s easy, plus 10 min easy cooldown'},
+      {n:'Strength upper',x:'Bench press 3x8, lat pulldown 3x10, shoulder press 3x10, plank 3x45s'},
+      {n:'Strength lower',x:'Squat 3x8, Romanian deadlift 3x10, split squat 3x10 each, sled push 4x20m'},
+      {n:'Steady cardio',x:'40 min brisk walk, jog or cycle at a pace where you can still talk, then 10 min core'}],
+    gen:[
+      {n:'Full-body strength',x:'Squat 3x8, bench press 3x8, row 3x10, farmer carry 3x30m'},
+      {n:'Cardio base',x:'30 to 40 min jog, cycle or swim at an easy conversational pace'},
+      {n:'Mobility &amp; core',x:'Hip and shoulder flow 15 min, dead bug, side plank, bird dog, 3 rounds each'},
+      {n:'Athletic mix',x:'Box step-ups, kettlebell swing, push-ups, medicine ball slams. 5 rounds, 45s on, 15s off'},
+      {n:'Long easy day',x:'60 min hike, long walk or recreational sport. Keep it fun'}]
+  };
+  var SLOTS={3:[0,2,4],4:[0,1,3,4],5:[0,1,2,3,4]};
+  var DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  function plan(){
+    var g=$('pGoal').value,n=+$('pDays').value,slots=SLOTS[n],list=S[g],html='',j=0;
+    for(var i=0;i<7;i++){
+      var at=slots.indexOf(i);
+      if(at>-1){var w=list[at%list.length];html+='<div class="day"><div class="d">'+DAYS[i]+'</div><div><b>'+w.n+'</b><span>'+w.x+'</span></div></div>';j++}
+      else html+='<div class="day rest"><div class="d">'+DAYS[i]+'</div><div><b>'+(i===6?'Rest':'Rest or easy walk')+'</b></div></div>';
+    }
+    $('week').innerHTML=html;
+  }
+  $('pGoal').addEventListener('input',plan);$('pDays').addEventListener('input',plan);
+  $('plan').addEventListener('submit',function(e){e.preventDefault()});
+  plan();
+
+  /* ---------- Join form ---------- */
+  $('join-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var name=$('jName').value.trim(),phone=$('jPhone').value.trim(),msg=$('jMsg');
+    msg.hidden=false;
+    if(!name||phone.replace(/\D/g,'').length<10){msg.textContent='Add your name and a 10-digit phone number so we can reach you.';return}
+    msg.textContent='Thanks, '+name+'. Your request for a '+$('jGoal').value.toLowerCase()+' trial is noted on this page. This sample form does not send data yet, so connect it to your email or booking tool before going live.';
+  });
+})();
+</script>
+</body>
+</html>
